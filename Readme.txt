@@ -1,2 +1,0 @@
-Javascript_day_1
-#ZETTA
