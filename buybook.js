@@ -1,13 +1,15 @@
 const readlineSync = require('readline-sync');
-function hitungHargaBuku(detailBuku, persenDiskon, persenPajak, jumlahBeli,) {
+function hitungHargaBuku(detailBuku, persenDiskon, persenPajak, jumlahBeli, jumlahKredit) {
     const HARGA_PPN = persenPajak; // konstan 11% pajak PPN
     let jumlahDiskon, hargaSetelahDiskon, jumlahPajak, hargaSetelahPajak;
     let statusDiskon = false;
+    
+
 
     // Hitung jumlah diskon dan harga setelah diskon
     if(detailBuku.harga > 100000){
       statusDiskon = true;
-      persenDiskon = parseInt(readlineSync.question("Masukkan persentase Diskon: "));
+      persenDiskon = parseInt(readlineSync.question("Masukkan persen Diskon\t: "));
       jumlahDiskon = detailBuku.harga * (persenDiskon / 100);
       hargaSetelahDiskon = (detailBuku.harga - jumlahDiskon) * jumlahBeli;
     }else{
@@ -21,7 +23,14 @@ function hitungHargaBuku(detailBuku, persenDiskon, persenPajak, jumlahBeli,) {
     // Hitung jumlah pajak dan harga setelah pajak
     jumlahPajak = hargaSetelahDiskon * (HARGA_PPN / 100);
     hargaSetelahPajak = (hargaSetelahDiskon + jumlahPajak);
-  
+    let totalKredit = 0;
+    let hargaKredit = hargaSetelahPajak / jumlahKredit;
+    let cicilan =[];
+    for(let i = 1; i <= jumlahKredit; i++){
+      cicilan.push('Pembayaran setelah'+ i +'bulan = Rp'+totalKredit+'\n\t');
+      totalKredit =totalKredit+ hargaKredit;
+    }
+
     // Cek apakah stok cukup
     while(detailBuku.stok >= jumlahBeli){
         detailBuku.stok -= jumlahBeli;
@@ -45,6 +54,9 @@ function hitungHargaBuku(detailBuku, persenDiskon, persenPajak, jumlahBeli,) {
           Harga Pajak : Rp ${hargaSetelahPajak}
           ================================
           
+          Beli dengan cicilan :
+          ${cicilan}
+
           Stok Buku    : ${detailBuku.stok}
           Beli buku lagi ? (y/n)`
         );
@@ -77,5 +89,6 @@ function hitungHargaBuku(detailBuku, persenDiskon, persenPajak, jumlahBeli,) {
   buku.pengarang =  readlineSync.question("Masukkan nama pengarang\t: ");
   buku.harga = parseInt(readlineSync.question("Masukkan harga buku\t: "));
   jumlahBeli = parseInt(readlineSync.question("Jumlah buku yang dibeli\t: "));
+  jumlahKredit = parseInt(readlineSync.question("Jumlah cicilan\t\t: "));
   
-  hitungHargaBuku(buku, 0, 11, jumlahBeli);
+  hitungHargaBuku(buku, 0, 11, jumlahBeli, jumlahKredit);
